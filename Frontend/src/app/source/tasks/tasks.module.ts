@@ -11,6 +11,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { TasksComponent } from './components/tasks/tasks.component';
+import { MatIconModule } from '@angular/material/icon';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -28,6 +30,8 @@ import { TasksComponent } from './components/tasks/tasks.component';
     MatDatepickerModule,
     MatTableModule,
     MatPaginatorModule,
+    MatIconModule,
+    FormsModule
   ],
 })
 export class TasksModule {}

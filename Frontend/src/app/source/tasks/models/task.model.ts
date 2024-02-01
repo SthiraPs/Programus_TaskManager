@@ -1,6 +1,6 @@
 export class TaskModel {
   id: number = 0;
-  taskName: string = '';
+  title: string = '';
   dueDate: string = '';
   description: string = '';
 }
