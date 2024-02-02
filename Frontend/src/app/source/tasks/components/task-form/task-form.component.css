@@ -1,0 +1,15 @@
+.container {
+  margin-top: 50px;
+}
+
+.card {
+  margin: 0 auto;
+  max-width: 600px;
+}
+
+
+.form-style {
+  display: flex;
+  flex-direction: column;
+ }
+ 

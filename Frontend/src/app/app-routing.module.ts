@@ -12,6 +12,7 @@ const routes: Routes = [
       { path: '', redirectTo: 'tasks', pathMatch: 'full' },
       { path: 'tasks', component: TasksComponent },
       { path: 'create-task', component: TaskFormComponent },
+      { path: 'create-task/:taskId', component: TaskFormComponent },
     ],
   },
 ];
