@@ -9,9 +9,10 @@ import { TaskModel } from '../models/task.model';
 import { environment } from 'src/environment';
 import { Observable, catchError, throwError } from 'rxjs';
 
-
 export class ResObj {
+  success: boolean = true;
   message: string = '';
+  error: string = '';
 }
 
 @Injectable({
@@ -21,32 +22,37 @@ export class TasksService {
   constructor(public http: HttpClient, private router: Router) {}
 
   getTaskList(): Observable<TaskModel[]> {
+    //Get All
     return this.http
       .get<TaskModel[]>(`${environment.apiUrl}/Task`)
       .pipe(catchError(this.handleError));
   }
 
-  getTaskById(taskId : number): Observable<TaskModel> {
+  getTaskById(taskId: number): Observable<TaskModel> {
+    //Get by Id
     return this.http
       .get<TaskModel>(`${environment.apiUrl}/Task/${taskId}`)
       .pipe(catchError(this.handleError));
   }
 
-  postTask(updatedTask: TaskModel): Observable<TaskModel[]> {
+  postTask(updatedTask: TaskModel) {
+    //Post
     return this.http
-      .post<TaskModel[]>(`${environment.apiUrl}/Task`, updatedTask)
+      .post<ResObj>(`${environment.apiUrl}/Task`, updatedTask)
       .pipe(catchError(this.handleError));
   }
 
   updateTaskById(updatedTask: TaskModel) {
+    //Update
     return this.http
       .put<ResObj>(`${environment.apiUrl}/Task/${updatedTask.id}`, updatedTask)
       .pipe(catchError(this.handleError));
   }
 
-  deleteTaskById(taskId : number): Observable<TaskModel[]> {
+  deleteTaskById(taskId: number) {
+    //Delete
     return this.http
-      .delete<TaskModel[]>(`${environment.apiUrl}/Task/${taskId}`)
+      .delete<ResObj>(`${environment.apiUrl}/Task/${taskId}`)
       .pipe(catchError(this.handleError));
   }
 

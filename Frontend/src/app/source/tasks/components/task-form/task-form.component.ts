@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { TasksService } from '../../services/tasks.service';
 import { FormMode } from 'src/app/source/common/models/form-mode.model';
 import { TaskModel } from '../../models/task.model';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-task-form',
@@ -13,8 +14,6 @@ import { TaskModel } from '../../models/task.model';
 })
 export class TaskFormComponent implements OnInit {
   taskForm!: FormGroup;
-  taskDetails!: TaskModel;
-  taskDetails2!: TaskModel;
   private subscriptions = new Subscription();
   selectedTaskId: number = 0;
   mode: FormMode = FormMode.ADD;
@@ -24,13 +23,11 @@ export class TaskFormComponent implements OnInit {
     private formBuilder: FormBuilder,
     private router: Router,
     private taskService: TasksService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private snackBar: MatSnackBar
   ) {
     const rowId = this.route.snapshot.paramMap.get('taskId') || 0;
     this.selectedTaskId = Number(rowId);
-
-    this.taskDetails = new TaskModel();
-    this.taskDetails2 = new TaskModel();
 
     if (this.selectedTaskId > 0) {
       this.mode = FormMode.VIEW;
@@ -39,7 +36,7 @@ export class TaskFormComponent implements OnInit {
   }
 
   async ngOnInit() {
-    //this.initializeForm();
+    this.initializeForm();
     if (this.mode == FormMode.VIEW) {
       await this.loadTaskById();
     }
@@ -48,46 +45,88 @@ export class TaskFormComponent implements OnInit {
   loadTaskById() {
     this.subscriptions.add(
       this.taskService.getTaskById(this.selectedTaskId).subscribe({
-        next: (res) => {
-          this.taskDetails = res;
+        next: (task) => {
+          this.taskForm.patchValue(task);
         },
         error: (error) => {
-          console.error(error);
+          this.snackBar.open('Error :' + error, 'Close', {
+            duration: 3000,
+            verticalPosition: 'top',
+            horizontalPosition: 'center',
+            panelClass: ['snack-bar-error'],
+          });
         },
       })
     );
   }
+
   initializeForm(): void {
     this.taskForm = this.formBuilder.group({
+      id: [0],
       title: ['', Validators.required],
-      duedate: [new Date(), Validators.required],
+      dueDate: ['', Validators.required],
       description: [''],
     });
   }
 
   onClickSubmit() {
-    if (this.mode == FormMode.ADD) {
-      this.subscriptions.add(
-        this.taskService.postTask(this.taskDetails).subscribe({
-          next: (res) => {
-            this.router.navigate([`/tasks`]);
-          },
-          error: (error) => {
-            console.error(error);
-          },
-        })
-      );
-    } else if (this.mode == FormMode.VIEW) {
-      this.subscriptions.add(
-        this.taskService.updateTaskById(this.taskDetails).subscribe({
-          next: (res) => {
-            this.router.navigate([`/tasks`]);
-          },
-          error: (error) => {
-            console.error(error);
-          },
-        })
-      );
+    if (this.taskForm.valid) {
+      if (this.mode == FormMode.ADD) {
+        this.subscriptions.add(
+          this.taskService.postTask(this.taskForm.value).subscribe({
+            next: (res) => {
+              if (res.success) {
+                this.router.navigate([`/tasks`]);
+                this.snackBar.open(res.message, 'Close', {
+                  duration: 3000,
+                  verticalPosition: 'top',
+                  horizontalPosition: 'center',
+                  panelClass: ['snack-bar-success'],
+                });
+              }
+            },
+            error: (error) => {
+              this.snackBar.open('Error :' + error, 'Close', {
+                duration: 3000,
+                verticalPosition: 'top',
+                horizontalPosition: 'center',
+                panelClass: ['snack-bar-error'],
+              });
+            },
+          })
+        );
+      } else if (this.mode == FormMode.VIEW) {
+        this.subscriptions.add(
+          this.taskService.updateTaskById(this.taskForm.value).subscribe({
+            next: (res) => {
+              if (res.success) {
+                this.router.navigate([`/tasks`]);
+                this.snackBar.open(res.message, 'Close', {
+                  duration: 3000,
+                  verticalPosition: 'top',
+                  horizontalPosition: 'center',
+                  panelClass: ['snack-bar-success'],
+                });
+              }
+            },
+            error: (error) => {
+              this.snackBar.open('Error :' + error, 'Close', {
+                duration: 3000,
+                verticalPosition: 'top',
+                horizontalPosition: 'center',
+                panelClass: ['snack-bar-error'],
+              });
+            },
+          })
+        );
+      }
+    } else {
+      this.snackBar.open('Please fill the requred fields', 'Close', {
+        duration: 3000,
+        verticalPosition: 'top',
+        horizontalPosition: 'center',
+        panelClass: ['snack-bar-error'],
+      });
     }
   }
 

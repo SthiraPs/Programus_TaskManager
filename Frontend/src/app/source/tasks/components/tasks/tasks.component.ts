@@ -5,6 +5,7 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { TaskModel } from '../../models/task.model';
 import { TasksService } from '../../services/tasks.service';
 import { Subscription } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-tasks',
@@ -26,7 +27,11 @@ export class TasksComponent {
 
   taskList: TaskModel[] = [];
 
-  constructor(private router: Router, private taskService: TasksService) {}
+  constructor(
+    private router: Router,
+    private taskService: TasksService,
+    private snackBar: MatSnackBar
+  ) {}
 
   async ngOnInit() {
     await this.loadTaskList();
@@ -69,11 +74,22 @@ export class TasksComponent {
   onClickDelete(taskId: number) {
     this.subscriptions.add(
       this.taskService.deleteTaskById(taskId).subscribe({
-        next: (tasks) => {
+        next: (res) => {
           this.loadTaskList();
+          this.snackBar.open(res.message, 'Close', {
+            duration: 3000,
+            verticalPosition: 'top',
+            horizontalPosition: 'center',
+            panelClass: ['snack-bar-error'],
+          });
         },
         error: (error) => {
-          console.error(error);
+          this.snackBar.open('Error :' + error, 'Close', {
+            duration: 3000,
+            verticalPosition: 'top',
+            horizontalPosition: 'center',
+            panelClass: ['snack-bar-error'],
+          });
         },
       })
     );

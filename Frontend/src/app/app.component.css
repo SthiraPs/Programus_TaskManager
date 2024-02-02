@@ -1,0 +1,11 @@
+/* Success SnackBar */
+.snack-bar-success {
+  background-color: #4caf50;
+  color: white;
+}
+
+/* Error SnackBar */
+.snack-bar-error {
+  background-color: #f44336;
+  color: white;
+}

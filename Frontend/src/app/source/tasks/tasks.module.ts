@@ -13,6 +13,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { TasksComponent } from './components/tasks/tasks.component';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { FormsModule } from '@angular/forms';
     MatTableModule,
     MatPaginatorModule,
     MatIconModule,
-    FormsModule
+    FormsModule,
+    MatSnackBarModule
   ],
 })
 export class TasksModule {}
