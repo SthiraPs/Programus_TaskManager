@@ -66,14 +66,11 @@ namespace Backend.Controllers
         {
             try
             {
-                //TaskModel.Active = 1;
-                //TaskModel.CreatedDate = DateTime.Now;
-                //TaskModel.UpdatedDate = DateTime.Now;
                 dbContext.Tasks.Add(TaskModel);
                 await dbContext.SaveChangesAsync();
                 return Ok(new {
                     success = true,
-                    message = "Task created successfully" 
+                    message = "Task created successfully"
                 });
             }
             catch (Exception ex)
